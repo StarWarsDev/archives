@@ -1,5 +1,9 @@
 package main
 
+import (
+	"log"
+)
+
 func main() {
-	println("archives")
+	log.Println("Coming soon.")
 }
