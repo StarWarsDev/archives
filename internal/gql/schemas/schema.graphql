@@ -1,0 +1,109 @@
+schema {
+    query: Query
+}
+
+interface Card {
+    id: ID!
+    name: String!
+    cardType: String!
+    cardSubType: String!
+    requirements: [String!]!
+    keywords: [String!]!
+    icon: String!
+    image: String!
+}
+
+type Surge {
+    attack: String
+    defense: String
+}
+
+type AttackDice {
+    red: Int
+    black: Int
+    white: Int
+}
+
+type WeaponRange {
+    from: Int!
+    to: Int
+}
+
+type Weapon {
+    name: String
+    range: WeaponRange!
+    dice: AttackDice!
+    keywords: [String!]!
+}
+
+type Unit implements Card {
+	id: ID!
+	name: String!
+    cardType: String!
+    cardSubType: String!
+    icon: String!
+    image: String!
+    subtitle: String
+    requirements: [String!]!
+    unique: Boolean
+    side: String!
+    unitType: String!
+    cost: Int!
+    rank: String!
+    faction: String!
+    minis: Int!
+    wounds: Int!
+    courage: Int
+    resilience: Int
+    defense: String!
+    surge: Surge
+    speed: Int!
+    slots: [String!]!
+    keywords: [String!]!
+    weapons: [Weapon!]!
+    commandCards: [String!]!
+}
+
+type Upgrade implements Card {
+    id: ID!
+    cardType: String!
+    cardSubType: String!
+    name: String!
+    requirements: [String!]!
+    icon: String!
+    image: String!
+    upgradeType: String!
+    unique: Boolean!
+    cost: Int!
+    keywords: [String!]!
+}
+
+type Command implements Card {
+    id: ID!
+    cardType: String!
+    cardSubType: String!
+    name: String!
+    requirements: [String!]!
+    icon: String!
+    image: String!
+    commander: String
+    faction: String
+    keywords: [String!]!
+    pips: Int!
+}
+
+type Keyword {
+    name: String!
+    description: String!
+}
+
+type Query {
+    command(id: ID!): Command!
+    commands(query: String!): [Command!]!
+    keyword(name: String!): Keyword!
+    keywords(query: String!): [Keyword!]!
+    unit(id: ID!): Unit!
+	units(query: String!): [Unit!]!
+    upgrade(id: ID!): Upgrade!
+    upgrades(query: String!): [Upgrade!]!
+}
