@@ -9,8 +9,10 @@ import (
 
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 
+// Resolver resolves GraphQL requests
 type Resolver struct{}
 
+// Query handles query requests
 func (r *Resolver) Query() gql.QueryResolver {
 	return &queryResolver{r}
 }
