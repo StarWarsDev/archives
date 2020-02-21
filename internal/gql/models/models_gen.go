@@ -6,12 +6,6 @@ type Card interface {
 	IsCard()
 }
 
-type AttackDice struct {
-	Red   *int `json:"red"`
-	Black *int `json:"black"`
-	White *int `json:"white"`
-}
-
 type Command struct {
 	ID           string   `json:"id"`
 	CardType     string   `json:"cardType"`
@@ -31,11 +25,6 @@ func (Command) IsCard() {}
 type Keyword struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-}
-
-type Surge struct {
-	Attack  *string `json:"attack"`
-	Defense *string `json:"defense"`
 }
 
 type Unit struct {
@@ -71,15 +60,3 @@ type Upgrade struct {
 }
 
 func (Upgrade) IsCard() {}
-
-type Weapon struct {
-	Name     *string      `json:"name"`
-	Range    *WeaponRange `json:"range"`
-	Dice     *AttackDice  `json:"dice"`
-	Keywords []string     `json:"keywords"`
-}
-
-type WeaponRange struct {
-	From int  `json:"from"`
-	To   *int `json:"to"`
-}

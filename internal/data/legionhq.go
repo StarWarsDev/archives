@@ -76,3 +76,25 @@ func UpgradeCards() ([]*models.Upgrade, error) {
 
 	return upgrades, nil
 }
+
+// Keywords returns a slice of keywords
+func Keywords() ([]*models.Keyword, error) {
+	data, err := getData()
+	if err != nil {
+		return nil, err
+	}
+
+	var keywords []*models.Keyword
+
+	for _, collection := range []map[string]string{data.KeywordDict, data.AdditionalKeywords} {
+		for name, description := range collection {
+			keyword := models.Keyword{
+				Name:        name,
+				Description: description,
+			}
+			keywords = append(keywords, &keyword)
+		}
+	}
+
+	return keywords, nil
+}

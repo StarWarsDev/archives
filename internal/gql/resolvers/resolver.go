@@ -22,7 +22,18 @@ func (r *Resolver) Query() gql.QueryResolver {
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Command(ctx context.Context, id string) (*models.Command, error) {
-	panic("not implemented")
+	cards, err := data.CommandCards()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, card := range cards {
+		if card.ID == id {
+			return card, nil
+		}
+	}
+
+	return nil, fmt.Errorf("could not find command with ID %s", id)
 }
 func (r *queryResolver) Commands(ctx context.Context, query *string) ([]*models.Command, error) {
 	if query == nil {
@@ -45,6 +56,10 @@ func (r *queryResolver) Commands(ctx context.Context, query *string) ([]*models.
 			var filteredCards []*models.Command
 			for _, commandCard := range commandCards {
 				switch field {
+				case "id":
+					if commandCard.ID == term {
+						filteredCards = append(filteredCards, commandCard)
+					}
 				case "commander":
 					if *commandCard.Commander == term {
 						filteredCards = append(filteredCards, commandCard)
@@ -77,18 +92,46 @@ func (r *queryResolver) Commands(ctx context.Context, query *string) ([]*models.
 }
 
 func (r *queryResolver) Keyword(ctx context.Context, name string) (*models.Keyword, error) {
-	panic("not implemented")
+	keywords, err := data.Keywords()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, keyword := range keywords {
+		if keyword.Name == name {
+			return keyword, nil
+		}
+	}
+
+	return nil, fmt.Errorf("could not find keyword with name \"%s\"", name)
 }
 func (r *queryResolver) Keywords(ctx context.Context, query *string) ([]*models.Keyword, error) {
-	if query != nil {
+	if query == nil {
 		// get everything
-		panic("not implemented")
+		return data.Keywords()
 	} else {
 		panic("query not implemented")
 	}
 }
 func (r *queryResolver) Unit(ctx context.Context, id string) (*models.Unit, error) {
-	panic("not implemented")
+	cards, err := data.UnitCards()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, card := range cards {
+		if card.ID == id {
+			query := "commander: " + card.Name
+			commandCards, err := r.Commands(ctx, &query)
+			if err != nil {
+				return nil, err
+			}
+			card.CommandCards = commandCards
+
+			return card, nil
+		}
+	}
+	return nil, fmt.Errorf("could not find unit with ID %s", id)
 }
 func (r *queryResolver) Units(ctx context.Context, query *string) ([]*models.Unit, error) {
 	if query == nil {
@@ -113,7 +156,17 @@ func (r *queryResolver) Units(ctx context.Context, query *string) ([]*models.Uni
 	}
 }
 func (r *queryResolver) Upgrade(ctx context.Context, id string) (*models.Upgrade, error) {
-	panic("not implemented")
+	cards, err := data.UpgradeCards()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, card := range cards {
+		if card.ID == id {
+			return card, nil
+		}
+	}
+	return nil, fmt.Errorf("could not find upgrade with ID %s", id)
 }
 func (r *queryResolver) Upgrades(ctx context.Context, query *string) ([]*models.Upgrade, error) {
 	if query == nil {

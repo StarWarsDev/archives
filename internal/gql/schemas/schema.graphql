@@ -13,29 +13,6 @@ interface Card {
     image: String!
 }
 
-type Surge {
-    attack: String
-    defense: String
-}
-
-type AttackDice {
-    red: Int
-    black: Int
-    white: Int
-}
-
-type WeaponRange {
-    from: Int!
-    to: Int
-}
-
-type Weapon {
-    name: String
-    range: WeaponRange!
-    dice: AttackDice!
-    keywords: [String!]!
-}
-
 type Unit implements Card {
 	id: ID!
 	name: String!
