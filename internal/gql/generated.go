@@ -557,7 +557,7 @@ type Unit implements Card {
     icon: String!
     image: String!
     requirements: [String!]!
-    unique: Boolean
+    unique: Boolean!
     cost: Int!
     rank: String!
     faction: String!
@@ -574,7 +574,7 @@ type Upgrade implements Card {
     requirements: [String!]!
     icon: String!
     image: String!
-    unique: Boolean
+    unique: Boolean!
     cost: Int!
     keywords: [String!]!
 }
@@ -587,8 +587,8 @@ type Command implements Card {
     requirements: [String!]!
     icon: String!
     image: String!
-    commander: String
-    faction: String
+    commander: String!
+    faction: String!
     keywords: [String!]!
     pips: Int!
 }
@@ -1061,12 +1061,15 @@ func (ec *executionContext) _Command_commander(ctx context.Context, field graphq
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Command_faction(ctx context.Context, field graphql.CollectedField, obj *models.Command) (ret graphql.Marshaler) {
@@ -1095,12 +1098,15 @@ func (ec *executionContext) _Command_faction(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Command_keywords(ctx context.Context, field graphql.CollectedField, obj *models.Command) (ret graphql.Marshaler) {
@@ -1963,12 +1969,15 @@ func (ec *executionContext) _Unit_unique(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Unit_cost(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
@@ -2478,12 +2487,15 @@ func (ec *executionContext) _Upgrade_unique(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Upgrade_cost(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
@@ -3788,8 +3800,14 @@ func (ec *executionContext) _Command(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "commander":
 			out.Values[i] = ec._Command_commander(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "faction":
 			out.Values[i] = ec._Command_faction(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "keywords":
 			out.Values[i] = ec._Command_keywords(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -4033,6 +4051,9 @@ func (ec *executionContext) _Unit(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "unique":
 			out.Values[i] = ec._Unit_unique(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "cost":
 			out.Values[i] = ec._Unit_cost(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -4122,6 +4143,9 @@ func (ec *executionContext) _Upgrade(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "unique":
 			out.Values[i] = ec._Upgrade_unique(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "cost":
 			out.Values[i] = ec._Upgrade_cost(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

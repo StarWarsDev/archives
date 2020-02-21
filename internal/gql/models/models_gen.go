@@ -14,8 +14,8 @@ type Command struct {
 	Requirements []string `json:"requirements"`
 	Icon         string   `json:"icon"`
 	Image        string   `json:"image"`
-	Commander    *string  `json:"commander"`
-	Faction      *string  `json:"faction"`
+	Commander    string   `json:"commander"`
+	Faction      string   `json:"faction"`
 	Keywords     []string `json:"keywords"`
 	Pips         int      `json:"pips"`
 }
@@ -35,7 +35,7 @@ type Unit struct {
 	Icon         string     `json:"icon"`
 	Image        string     `json:"image"`
 	Requirements []string   `json:"requirements"`
-	Unique       *bool      `json:"unique"`
+	Unique       bool       `json:"unique"`
 	Cost         int        `json:"cost"`
 	Rank         string     `json:"rank"`
 	Faction      string     `json:"faction"`
@@ -54,7 +54,7 @@ type Upgrade struct {
 	Requirements []string `json:"requirements"`
 	Icon         string   `json:"icon"`
 	Image        string   `json:"image"`
-	Unique       *bool    `json:"unique"`
+	Unique       bool     `json:"unique"`
 	Cost         int      `json:"cost"`
 	Keywords     []string `json:"keywords"`
 }

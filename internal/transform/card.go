@@ -16,9 +16,6 @@ func CardToCommand(card *legionhq.Card) models.Command {
 		pips = 0
 	}
 
-	commander := card.Commander
-	faction := card.Faction
-
 	return models.Command{
 		ID:           card.ID,
 		CardType:     card.CardType,
@@ -27,8 +24,8 @@ func CardToCommand(card *legionhq.Card) models.Command {
 		Requirements: card.Requirements,
 		Icon:         ImagePathToURL(card.IconLocation),
 		Image:        ImagePathToURL(card.ImageLocation),
-		Commander:    &commander,
-		Faction:      &faction,
+		Commander:    card.Commander,
+		Faction:      card.Faction,
 		Keywords:     card.Keywords,
 		Pips:         pips,
 	}
@@ -36,7 +33,6 @@ func CardToCommand(card *legionhq.Card) models.Command {
 
 // CardToUnit converts a legionhq card into a Unit
 func CardToUnit(card *legionhq.Card) models.Unit {
-	isUnique := card.IsUnique
 	return models.Unit{
 		ID:           card.ID,
 		Name:         card.CardName,
@@ -45,7 +41,7 @@ func CardToUnit(card *legionhq.Card) models.Unit {
 		Icon:         ImagePathToURL(card.IconLocation),
 		Image:        ImagePathToURL(card.ImageLocation),
 		Requirements: card.Requirements,
-		Unique:       &isUnique,
+		Unique:       card.IsUnique,
 		Cost:         card.Cost,
 		Rank:         card.Rank,
 		Faction:      card.Faction,
@@ -55,7 +51,6 @@ func CardToUnit(card *legionhq.Card) models.Unit {
 }
 
 func CardToUpgrade(card *legionhq.Card) models.Upgrade {
-	isUnique := card.IsUnique
 	return models.Upgrade{
 		ID:           card.ID,
 		CardType:     card.CardType,
@@ -64,7 +59,7 @@ func CardToUpgrade(card *legionhq.Card) models.Upgrade {
 		Requirements: card.Requirements,
 		Icon:         ImagePathToURL(card.IconLocation),
 		Image:        ImagePathToURL(card.ImageLocation),
-		Unique:       &isUnique,
+		Unique:       card.IsUnique,
 		Cost:         card.Cost,
 		Keywords:     card.Keywords,
 	}

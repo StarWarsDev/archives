@@ -21,7 +21,7 @@ type Unit implements Card {
     icon: String!
     image: String!
     requirements: [String!]!
-    unique: Boolean
+    unique: Boolean!
     cost: Int!
     rank: String!
     faction: String!
@@ -38,7 +38,7 @@ type Upgrade implements Card {
     requirements: [String!]!
     icon: String!
     image: String!
-    unique: Boolean
+    unique: Boolean!
     cost: Int!
     keywords: [String!]!
 }
@@ -51,8 +51,8 @@ type Command implements Card {
     requirements: [String!]!
     icon: String!
     image: String!
-    commander: String
-    faction: String
+    commander: String!
+    faction: String!
     keywords: [String!]!
     pips: Int!
 }
