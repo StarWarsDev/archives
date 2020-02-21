@@ -1,6 +1,12 @@
 # Star Wars Legion Archives
 A read-only GraphQL API for querying data about Star Wars Legion.
 
+## Access
+The API is read only and does **not** require any authentication.
+
+You can find the GraphQL Playground here: https://sw-legion-archives.herokuapp.com and the graphql
+endpoint can be found at https://sw-legion-archives.herokuapp.com/graphql.
+
 ## Data
 The data backing this API comes directly from the `src/data.json` file from
 [@NicholasCBrown/legion-HQ-2.0](https://github.com/NicholasCBrown/legion-HQ-2.0).
