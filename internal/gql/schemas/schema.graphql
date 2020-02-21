@@ -43,25 +43,14 @@ type Unit implements Card {
     cardSubType: String!
     icon: String!
     image: String!
-    subtitle: String
     requirements: [String!]!
     unique: Boolean
-    side: String!
-    unitType: String!
     cost: Int!
     rank: String!
     faction: String!
-    minis: Int!
-    wounds: Int!
-    courage: Int
-    resilience: Int
-    defense: String!
-    surge: Surge
-    speed: Int!
     slots: [String!]!
     keywords: [String!]!
-    weapons: [Weapon!]!
-    commandCards: [String!]!
+    commandCards: [Command!]!
 }
 
 type Upgrade implements Card {
@@ -72,8 +61,7 @@ type Upgrade implements Card {
     requirements: [String!]!
     icon: String!
     image: String!
-    upgradeType: String!
-    unique: Boolean!
+    unique: Boolean
     cost: Int!
     keywords: [String!]!
 }
@@ -99,11 +87,11 @@ type Keyword {
 
 type Query {
     command(id: ID!): Command!
-    commands(query: String!): [Command!]!
+    commands(query: String): [Command!]!
     keyword(name: String!): Keyword!
-    keywords(query: String!): [Keyword!]!
+    keywords(query: String): [Keyword!]!
     unit(id: ID!): Unit!
-	units(query: String!): [Unit!]!
+	units(query: String): [Unit!]!
     upgrade(id: ID!): Upgrade!
-    upgrades(query: String!): [Upgrade!]!
+    upgrades(query: String): [Upgrade!]!
 }

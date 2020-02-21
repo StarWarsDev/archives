@@ -39,31 +39,20 @@ type Surge struct {
 }
 
 type Unit struct {
-	ID           string    `json:"id"`
-	Name         string    `json:"name"`
-	CardType     string    `json:"cardType"`
-	CardSubType  string    `json:"cardSubType"`
-	Icon         string    `json:"icon"`
-	Image        string    `json:"image"`
-	Subtitle     *string   `json:"subtitle"`
-	Requirements []string  `json:"requirements"`
-	Unique       *bool     `json:"unique"`
-	Side         string    `json:"side"`
-	UnitType     string    `json:"unitType"`
-	Cost         int       `json:"cost"`
-	Rank         string    `json:"rank"`
-	Faction      string    `json:"faction"`
-	Minis        int       `json:"minis"`
-	Wounds       int       `json:"wounds"`
-	Courage      *int      `json:"courage"`
-	Resilience   *int      `json:"resilience"`
-	Defense      string    `json:"defense"`
-	Surge        *Surge    `json:"surge"`
-	Speed        int       `json:"speed"`
-	Slots        []string  `json:"slots"`
-	Keywords     []string  `json:"keywords"`
-	Weapons      []*Weapon `json:"weapons"`
-	CommandCards []string  `json:"commandCards"`
+	ID           string     `json:"id"`
+	Name         string     `json:"name"`
+	CardType     string     `json:"cardType"`
+	CardSubType  string     `json:"cardSubType"`
+	Icon         string     `json:"icon"`
+	Image        string     `json:"image"`
+	Requirements []string   `json:"requirements"`
+	Unique       *bool      `json:"unique"`
+	Cost         int        `json:"cost"`
+	Rank         string     `json:"rank"`
+	Faction      string     `json:"faction"`
+	Slots        []string   `json:"slots"`
+	Keywords     []string   `json:"keywords"`
+	CommandCards []*Command `json:"commandCards"`
 }
 
 func (Unit) IsCard() {}
@@ -76,8 +65,7 @@ type Upgrade struct {
 	Requirements []string `json:"requirements"`
 	Icon         string   `json:"icon"`
 	Image        string   `json:"image"`
-	UpgradeType  string   `json:"upgradeType"`
-	Unique       bool     `json:"unique"`
+	Unique       *bool    `json:"unique"`
 	Cost         int      `json:"cost"`
 	Keywords     []string `json:"keywords"`
 }

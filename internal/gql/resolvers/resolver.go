@@ -2,11 +2,13 @@ package resolvers
 
 import (
 	"context"
-	"github.com/StarWarsDev/archives/internal/transform"
-	legionhq "github.com/StarWarsDev/go-legion-hq"
-
+	"errors"
+	"fmt"
+	"github.com/StarWarsDev/archives/internal/data"
 	"github.com/StarWarsDev/archives/internal/gql"
 	"github.com/StarWarsDev/archives/internal/gql/models"
+	"strconv"
+	"strings"
 )
 
 // Resolver wraps up all the GraphQL resolvers
@@ -22,30 +24,63 @@ type queryResolver struct{ *Resolver }
 func (r *queryResolver) Command(ctx context.Context, id string) (*models.Command, error) {
 	panic("not implemented")
 }
-func (r *queryResolver) Commands(ctx context.Context, query string) ([]*models.Command, error) {
-	if query == "" {
-		data, err := legionhq.GetData()
+func (r *queryResolver) Commands(ctx context.Context, query *string) ([]*models.Command, error) {
+	if query == nil {
+		return data.CommandCards()
+	} else {
+		field, term, err := parseQuery(query)
 		if err != nil {
 			return nil, err
 		}
+		if field != "" {
+			if term == "" {
+				return nil, errors.New("malformed query: term cannot be blank")
+			}
 
-		var commands []*models.Command
+			commandCards, err := data.CommandCards()
+			if err != nil {
+				return nil, err
+			}
 
-		for _, card := range data.CommandCards() {
-			command := transform.CardToCommand(card)
-			commands = append(commands, &command)
+			var filteredCards []*models.Command
+			for _, commandCard := range commandCards {
+				switch field {
+				case "commander":
+					if *commandCard.Commander == term {
+						filteredCards = append(filteredCards, commandCard)
+					}
+				case "name":
+					if commandCard.Name == term {
+						filteredCards = append(filteredCards, commandCard)
+					}
+				case "pips":
+					pips, err := strconv.Atoi(term)
+					if err != nil {
+						return nil, err
+					}
+					if commandCard.Pips == pips {
+						filteredCards = append(filteredCards, commandCard)
+					}
+				case "faction":
+					if *commandCard.Faction == term {
+						filteredCards = append(filteredCards, commandCard)
+					}
+				default:
+					return nil, fmt.Errorf("bad query: field [%s] is not searchable", field)
+				}
+			}
+
+			return filteredCards, nil
 		}
-
-		return commands, nil
-	} else {
-		panic("query not implemented")
+		return nil, errors.New("malformed query: query cannot be blank")
 	}
 }
+
 func (r *queryResolver) Keyword(ctx context.Context, name string) (*models.Keyword, error) {
 	panic("not implemented")
 }
-func (r *queryResolver) Keywords(ctx context.Context, query string) ([]*models.Keyword, error) {
-	if query == "" {
+func (r *queryResolver) Keywords(ctx context.Context, query *string) ([]*models.Keyword, error) {
+	if query != nil {
 		// get everything
 		panic("not implemented")
 	} else {
@@ -55,10 +90,24 @@ func (r *queryResolver) Keywords(ctx context.Context, query string) ([]*models.K
 func (r *queryResolver) Unit(ctx context.Context, id string) (*models.Unit, error) {
 	panic("not implemented")
 }
-func (r *queryResolver) Units(ctx context.Context, query string) ([]*models.Unit, error) {
-	if query == "" {
+func (r *queryResolver) Units(ctx context.Context, query *string) ([]*models.Unit, error) {
+	if query == nil {
 		// get everything
-		panic("not implemented")
+		units, err := data.UnitCards()
+		if err != nil {
+			return nil, err
+		}
+
+		for _, unit := range units {
+			query := "commander: " + unit.Name
+			commandCards, err := r.Commands(ctx, &query)
+			if err != nil {
+				return nil, err
+			}
+			unit.CommandCards = commandCards
+		}
+
+		return units, nil
 	} else {
 		panic("query not implemented")
 	}
@@ -66,11 +115,23 @@ func (r *queryResolver) Units(ctx context.Context, query string) ([]*models.Unit
 func (r *queryResolver) Upgrade(ctx context.Context, id string) (*models.Upgrade, error) {
 	panic("not implemented")
 }
-func (r *queryResolver) Upgrades(ctx context.Context, query string) ([]*models.Upgrade, error) {
-	if query == "" {
+func (r *queryResolver) Upgrades(ctx context.Context, query *string) ([]*models.Upgrade, error) {
+	if query == nil {
 		// get everything
-		panic("not implemented")
+		upgrades, err := data.UpgradeCards()
+		return upgrades, err
 	} else {
 		panic("query not implemented")
 	}
+}
+
+func parseQuery(query *string) (field, term string, err error) {
+	q := strings.Split(*query, ":")
+	if len(q) < 1 || len(q) < 2 {
+		err = errors.New("malformed query")
+		return
+	}
+	field = strings.TrimSpace(q[0])
+	term = strings.TrimSpace(q[1])
+	return
 }

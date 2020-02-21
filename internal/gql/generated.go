@@ -70,13 +70,13 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Command  func(childComplexity int, id string) int
-		Commands func(childComplexity int, query string) int
+		Commands func(childComplexity int, query *string) int
 		Keyword  func(childComplexity int, name string) int
-		Keywords func(childComplexity int, query string) int
+		Keywords func(childComplexity int, query *string) int
 		Unit     func(childComplexity int, id string) int
-		Units    func(childComplexity int, query string) int
+		Units    func(childComplexity int, query *string) int
 		Upgrade  func(childComplexity int, id string) int
-		Upgrades func(childComplexity int, query string) int
+		Upgrades func(childComplexity int, query *string) int
 	}
 
 	Surge struct {
@@ -89,27 +89,16 @@ type ComplexityRoot struct {
 		CardType     func(childComplexity int) int
 		CommandCards func(childComplexity int) int
 		Cost         func(childComplexity int) int
-		Courage      func(childComplexity int) int
-		Defense      func(childComplexity int) int
 		Faction      func(childComplexity int) int
 		ID           func(childComplexity int) int
 		Icon         func(childComplexity int) int
 		Image        func(childComplexity int) int
 		Keywords     func(childComplexity int) int
-		Minis        func(childComplexity int) int
 		Name         func(childComplexity int) int
 		Rank         func(childComplexity int) int
 		Requirements func(childComplexity int) int
-		Resilience   func(childComplexity int) int
-		Side         func(childComplexity int) int
 		Slots        func(childComplexity int) int
-		Speed        func(childComplexity int) int
-		Subtitle     func(childComplexity int) int
-		Surge        func(childComplexity int) int
 		Unique       func(childComplexity int) int
-		UnitType     func(childComplexity int) int
-		Weapons      func(childComplexity int) int
-		Wounds       func(childComplexity int) int
 	}
 
 	Upgrade struct {
@@ -123,7 +112,6 @@ type ComplexityRoot struct {
 		Name         func(childComplexity int) int
 		Requirements func(childComplexity int) int
 		Unique       func(childComplexity int) int
-		UpgradeType  func(childComplexity int) int
 	}
 
 	Weapon struct {
@@ -141,13 +129,13 @@ type ComplexityRoot struct {
 
 type QueryResolver interface {
 	Command(ctx context.Context, id string) (*models.Command, error)
-	Commands(ctx context.Context, query string) ([]*models.Command, error)
+	Commands(ctx context.Context, query *string) ([]*models.Command, error)
 	Keyword(ctx context.Context, name string) (*models.Keyword, error)
-	Keywords(ctx context.Context, query string) ([]*models.Keyword, error)
+	Keywords(ctx context.Context, query *string) ([]*models.Keyword, error)
 	Unit(ctx context.Context, id string) (*models.Unit, error)
-	Units(ctx context.Context, query string) ([]*models.Unit, error)
+	Units(ctx context.Context, query *string) ([]*models.Unit, error)
 	Upgrade(ctx context.Context, id string) (*models.Upgrade, error)
-	Upgrades(ctx context.Context, query string) ([]*models.Upgrade, error)
+	Upgrades(ctx context.Context, query *string) ([]*models.Upgrade, error)
 }
 
 type executableSchema struct {
@@ -299,7 +287,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Commands(childComplexity, args["query"].(string)), true
+		return e.complexity.Query.Commands(childComplexity, args["query"].(*string)), true
 
 	case "Query.keyword":
 		if e.complexity.Query.Keyword == nil {
@@ -323,7 +311,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Keywords(childComplexity, args["query"].(string)), true
+		return e.complexity.Query.Keywords(childComplexity, args["query"].(*string)), true
 
 	case "Query.unit":
 		if e.complexity.Query.Unit == nil {
@@ -347,7 +335,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Units(childComplexity, args["query"].(string)), true
+		return e.complexity.Query.Units(childComplexity, args["query"].(*string)), true
 
 	case "Query.upgrade":
 		if e.complexity.Query.Upgrade == nil {
@@ -371,7 +359,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Upgrades(childComplexity, args["query"].(string)), true
+		return e.complexity.Query.Upgrades(childComplexity, args["query"].(*string)), true
 
 	case "Surge.attack":
 		if e.complexity.Surge.Attack == nil {
@@ -415,20 +403,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Unit.Cost(childComplexity), true
 
-	case "Unit.courage":
-		if e.complexity.Unit.Courage == nil {
-			break
-		}
-
-		return e.complexity.Unit.Courage(childComplexity), true
-
-	case "Unit.defense":
-		if e.complexity.Unit.Defense == nil {
-			break
-		}
-
-		return e.complexity.Unit.Defense(childComplexity), true
-
 	case "Unit.faction":
 		if e.complexity.Unit.Faction == nil {
 			break
@@ -464,13 +438,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Unit.Keywords(childComplexity), true
 
-	case "Unit.minis":
-		if e.complexity.Unit.Minis == nil {
-			break
-		}
-
-		return e.complexity.Unit.Minis(childComplexity), true
-
 	case "Unit.name":
 		if e.complexity.Unit.Name == nil {
 			break
@@ -492,20 +459,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Unit.Requirements(childComplexity), true
 
-	case "Unit.resilience":
-		if e.complexity.Unit.Resilience == nil {
-			break
-		}
-
-		return e.complexity.Unit.Resilience(childComplexity), true
-
-	case "Unit.side":
-		if e.complexity.Unit.Side == nil {
-			break
-		}
-
-		return e.complexity.Unit.Side(childComplexity), true
-
 	case "Unit.slots":
 		if e.complexity.Unit.Slots == nil {
 			break
@@ -513,54 +466,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Unit.Slots(childComplexity), true
 
-	case "Unit.speed":
-		if e.complexity.Unit.Speed == nil {
-			break
-		}
-
-		return e.complexity.Unit.Speed(childComplexity), true
-
-	case "Unit.subtitle":
-		if e.complexity.Unit.Subtitle == nil {
-			break
-		}
-
-		return e.complexity.Unit.Subtitle(childComplexity), true
-
-	case "Unit.surge":
-		if e.complexity.Unit.Surge == nil {
-			break
-		}
-
-		return e.complexity.Unit.Surge(childComplexity), true
-
 	case "Unit.unique":
 		if e.complexity.Unit.Unique == nil {
 			break
 		}
 
 		return e.complexity.Unit.Unique(childComplexity), true
-
-	case "Unit.unitType":
-		if e.complexity.Unit.UnitType == nil {
-			break
-		}
-
-		return e.complexity.Unit.UnitType(childComplexity), true
-
-	case "Unit.weapons":
-		if e.complexity.Unit.Weapons == nil {
-			break
-		}
-
-		return e.complexity.Unit.Weapons(childComplexity), true
-
-	case "Unit.wounds":
-		if e.complexity.Unit.Wounds == nil {
-			break
-		}
-
-		return e.complexity.Unit.Wounds(childComplexity), true
 
 	case "Upgrade.cardSubType":
 		if e.complexity.Upgrade.CardSubType == nil {
@@ -631,13 +542,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Upgrade.Unique(childComplexity), true
-
-	case "Upgrade.upgradeType":
-		if e.complexity.Upgrade.UpgradeType == nil {
-			break
-		}
-
-		return e.complexity.Upgrade.UpgradeType(childComplexity), true
 
 	case "Weapon.dice":
 		if e.complexity.Weapon.Dice == nil {
@@ -775,25 +679,14 @@ type Unit implements Card {
     cardSubType: String!
     icon: String!
     image: String!
-    subtitle: String
     requirements: [String!]!
     unique: Boolean
-    side: String!
-    unitType: String!
     cost: Int!
     rank: String!
     faction: String!
-    minis: Int!
-    wounds: Int!
-    courage: Int
-    resilience: Int
-    defense: String!
-    surge: Surge
-    speed: Int!
     slots: [String!]!
     keywords: [String!]!
-    weapons: [Weapon!]!
-    commandCards: [String!]!
+    commandCards: [Command!]!
 }
 
 type Upgrade implements Card {
@@ -804,8 +697,7 @@ type Upgrade implements Card {
     requirements: [String!]!
     icon: String!
     image: String!
-    upgradeType: String!
-    unique: Boolean!
+    unique: Boolean
     cost: Int!
     keywords: [String!]!
 }
@@ -831,13 +723,13 @@ type Keyword {
 
 type Query {
     command(id: ID!): Command!
-    commands(query: String!): [Command!]!
+    commands(query: String): [Command!]!
     keyword(name: String!): Keyword!
-    keywords(query: String!): [Keyword!]!
+    keywords(query: String): [Keyword!]!
     unit(id: ID!): Unit!
-	units(query: String!): [Unit!]!
+	units(query: String): [Unit!]!
     upgrade(id: ID!): Upgrade!
-    upgrades(query: String!): [Upgrade!]!
+    upgrades(query: String): [Upgrade!]!
 }`},
 )
 
@@ -876,9 +768,9 @@ func (ec *executionContext) field_Query_command_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_commands_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["query"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -904,9 +796,9 @@ func (ec *executionContext) field_Query_keyword_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_keywords_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["query"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -932,9 +824,9 @@ func (ec *executionContext) field_Query_unit_args(ctx context.Context, rawArgs m
 func (ec *executionContext) field_Query_units_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["query"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -960,9 +852,9 @@ func (ec *executionContext) field_Query_upgrade_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_upgrades_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 *string
 	if tmp, ok := rawArgs["query"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1654,7 +1546,7 @@ func (ec *executionContext) _Query_commands(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Commands(rctx, args["query"].(string))
+		return ec.resolvers.Query().Commands(rctx, args["query"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1742,7 +1634,7 @@ func (ec *executionContext) _Query_keywords(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Keywords(rctx, args["query"].(string))
+		return ec.resolvers.Query().Keywords(rctx, args["query"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1830,7 +1722,7 @@ func (ec *executionContext) _Query_units(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Units(rctx, args["query"].(string))
+		return ec.resolvers.Query().Units(rctx, args["query"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1918,7 +1810,7 @@ func (ec *executionContext) _Query_upgrades(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Upgrades(rctx, args["query"].(string))
+		return ec.resolvers.Query().Upgrades(rctx, args["query"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2301,40 +2193,6 @@ func (ec *executionContext) _Unit_image(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Unit_subtitle(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Subtitle, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Unit_requirements(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2404,80 +2262,6 @@ func (ec *executionContext) _Unit_unique(ctx context.Context, field graphql.Coll
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_side(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Side, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_unitType(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UnitType, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Unit_cost(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
@@ -2591,256 +2375,6 @@ func (ec *executionContext) _Unit_faction(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Unit_minis(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Minis, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_wounds(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Wounds, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_courage(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Courage, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_resilience(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Resilience, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_defense(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Defense, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_surge(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Surge, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.Surge)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOSurge2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐSurge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Unit_speed(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Speed, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Unit_slots(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2915,43 +2449,6 @@ func (ec *executionContext) _Unit_keywords(ctx context.Context, field graphql.Co
 	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Unit_weapons(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Unit",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Weapons, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*models.Weapon)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNWeapon2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Unit_commandCards(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2983,10 +2480,10 @@ func (ec *executionContext) _Unit_commandCards(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]string)
+	res := resTmp.([]*models.Command)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
+	return ec.marshalNCommand2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐCommand(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Upgrade_id(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
@@ -3248,43 +2745,6 @@ func (ec *executionContext) _Upgrade_image(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Upgrade_upgradeType(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Upgrade",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpgradeType, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Upgrade_unique(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -3311,15 +2771,12 @@ func (ec *executionContext) _Upgrade_unique(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Upgrade_cost(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
@@ -5132,8 +4589,6 @@ func (ec *executionContext) _Unit(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "subtitle":
-			out.Values[i] = ec._Unit_subtitle(ctx, field, obj)
 		case "requirements":
 			out.Values[i] = ec._Unit_requirements(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -5141,16 +4596,6 @@ func (ec *executionContext) _Unit(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "unique":
 			out.Values[i] = ec._Unit_unique(ctx, field, obj)
-		case "side":
-			out.Values[i] = ec._Unit_side(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "unitType":
-			out.Values[i] = ec._Unit_unitType(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "cost":
 			out.Values[i] = ec._Unit_cost(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -5166,32 +4611,6 @@ func (ec *executionContext) _Unit(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "minis":
-			out.Values[i] = ec._Unit_minis(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "wounds":
-			out.Values[i] = ec._Unit_wounds(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "courage":
-			out.Values[i] = ec._Unit_courage(ctx, field, obj)
-		case "resilience":
-			out.Values[i] = ec._Unit_resilience(ctx, field, obj)
-		case "defense":
-			out.Values[i] = ec._Unit_defense(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "surge":
-			out.Values[i] = ec._Unit_surge(ctx, field, obj)
-		case "speed":
-			out.Values[i] = ec._Unit_speed(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "slots":
 			out.Values[i] = ec._Unit_slots(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -5199,11 +4618,6 @@ func (ec *executionContext) _Unit(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "keywords":
 			out.Values[i] = ec._Unit_keywords(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "weapons":
-			out.Values[i] = ec._Unit_weapons(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -5269,16 +4683,8 @@ func (ec *executionContext) _Upgrade(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "upgradeType":
-			out.Values[i] = ec._Upgrade_upgradeType(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "unique":
 			out.Values[i] = ec._Upgrade_unique(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "cost":
 			out.Values[i] = ec._Upgrade_cost(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -5916,57 +5322,6 @@ func (ec *executionContext) marshalNUpgrade2ᚖgithubᚗcomᚋStarWarsDevᚋarch
 	return ec._Upgrade(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNWeapon2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v models.Weapon) graphql.Marshaler {
-	return ec._Weapon(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNWeapon2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v []*models.Weapon) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		rctx := &graphql.ResolverContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalNWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v *models.Weapon) graphql.Marshaler {
-	if v == nil {
-		if !ec.HasError(graphql.GetResolverContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._Weapon(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalNWeaponRange2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeaponRange(ctx context.Context, sel ast.SelectionSet, v models.WeaponRange) graphql.Marshaler {
 	return ec._WeaponRange(ctx, sel, &v)
 }
@@ -6274,17 +5629,6 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return ec.marshalOString2string(ctx, sel, *v)
-}
-
-func (ec *executionContext) marshalOSurge2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐSurge(ctx context.Context, sel ast.SelectionSet, v models.Surge) graphql.Marshaler {
-	return ec._Surge(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOSurge2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐSurge(ctx context.Context, sel ast.SelectionSet, v *models.Surge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Surge(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValue(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {
