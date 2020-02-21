@@ -98,3 +98,30 @@ func Keywords() ([]*models.Keyword, error) {
 
 	return keywords, nil
 }
+
+func CommunityLinks() ([]*models.LinkGroup, error) {
+	data, err := getData()
+	if err != nil {
+		return nil, err
+	}
+
+	var linkGroups []*models.LinkGroup
+
+	for name, linksIn := range data.CommunityLinks {
+		var links []*models.Link
+
+		for _, link := range linksIn {
+			links = append(links, &models.Link{
+				Name: link.Name,
+				URL:  link.URL,
+			})
+		}
+
+		linkGroups = append(linkGroups, &models.LinkGroup{
+			Name:  name,
+			Links: links,
+		})
+	}
+
+	return linkGroups, nil
+}

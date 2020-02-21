@@ -62,9 +62,20 @@ type Keyword {
     description: String!
 }
 
+type LinkGroup {
+    name: String!
+    links: [Link!]!
+}
+
+type Link {
+    name: String!
+    url: String!
+}
+
 type Query {
     command(id: ID!): Command!
     commands(query: String): [Command!]!
+    communityLinks: [LinkGroup!]!
     keyword(name: String!): Keyword!
     keywords(query: String): [Keyword!]!
     unit(id: ID!): Unit!

@@ -365,6 +365,10 @@ func (r *queryResolver) Upgrades(ctx context.Context, query *string) ([]*models.
 	}
 }
 
+func (r *queryResolver) CommunityLinks(ctx context.Context) ([]*models.LinkGroup, error) {
+	return data.CommunityLinks()
+}
+
 func parseQuery(query *string) (field, term string, err error) {
 	if *query == "" {
 		return "", "", errors.New("malformed query: query cannot be blank")

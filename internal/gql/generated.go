@@ -62,15 +62,26 @@ type ComplexityRoot struct {
 		Name        func(childComplexity int) int
 	}
 
+	Link struct {
+		Name func(childComplexity int) int
+		URL  func(childComplexity int) int
+	}
+
+	LinkGroup struct {
+		Links func(childComplexity int) int
+		Name  func(childComplexity int) int
+	}
+
 	Query struct {
-		Command  func(childComplexity int, id string) int
-		Commands func(childComplexity int, query *string) int
-		Keyword  func(childComplexity int, name string) int
-		Keywords func(childComplexity int, query *string) int
-		Unit     func(childComplexity int, id string) int
-		Units    func(childComplexity int, query *string) int
-		Upgrade  func(childComplexity int, id string) int
-		Upgrades func(childComplexity int, query *string) int
+		Command        func(childComplexity int, id string) int
+		Commands       func(childComplexity int, query *string) int
+		CommunityLinks func(childComplexity int) int
+		Keyword        func(childComplexity int, name string) int
+		Keywords       func(childComplexity int, query *string) int
+		Unit           func(childComplexity int, id string) int
+		Units          func(childComplexity int, query *string) int
+		Upgrade        func(childComplexity int, id string) int
+		Upgrades       func(childComplexity int, query *string) int
 	}
 
 	Unit struct {
@@ -107,6 +118,7 @@ type ComplexityRoot struct {
 type QueryResolver interface {
 	Command(ctx context.Context, id string) (*models.Command, error)
 	Commands(ctx context.Context, query *string) ([]*models.Command, error)
+	CommunityLinks(ctx context.Context) ([]*models.LinkGroup, error)
 	Keyword(ctx context.Context, name string) (*models.Keyword, error)
 	Keywords(ctx context.Context, query *string) ([]*models.Keyword, error)
 	Unit(ctx context.Context, id string) (*models.Unit, error)
@@ -221,6 +233,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Keyword.Name(childComplexity), true
 
+	case "Link.name":
+		if e.complexity.Link.Name == nil {
+			break
+		}
+
+		return e.complexity.Link.Name(childComplexity), true
+
+	case "Link.url":
+		if e.complexity.Link.URL == nil {
+			break
+		}
+
+		return e.complexity.Link.URL(childComplexity), true
+
+	case "LinkGroup.links":
+		if e.complexity.LinkGroup.Links == nil {
+			break
+		}
+
+		return e.complexity.LinkGroup.Links(childComplexity), true
+
+	case "LinkGroup.name":
+		if e.complexity.LinkGroup.Name == nil {
+			break
+		}
+
+		return e.complexity.LinkGroup.Name(childComplexity), true
+
 	case "Query.command":
 		if e.complexity.Query.Command == nil {
 			break
@@ -244,6 +284,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Commands(childComplexity, args["query"].(*string)), true
+
+	case "Query.communityLinks":
+		if e.complexity.Query.CommunityLinks == nil {
+			break
+		}
+
+		return e.complexity.Query.CommunityLinks(childComplexity), true
 
 	case "Query.keyword":
 		if e.complexity.Query.Keyword == nil {
@@ -598,9 +645,20 @@ type Keyword {
     description: String!
 }
 
+type LinkGroup {
+    name: String!
+    links: [Link!]!
+}
+
+type Link {
+    name: String!
+    url: String!
+}
+
 type Query {
     command(id: ID!): Command!
     commands(query: String): [Command!]!
+    communityLinks: [LinkGroup!]!
     keyword(name: String!): Keyword!
     keywords(query: String): [Keyword!]!
     unit(id: ID!): Unit!
@@ -1257,6 +1315,154 @@ func (ec *executionContext) _Keyword_description(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Link_name(ctx context.Context, field graphql.CollectedField, obj *models.Link) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Link",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Link_url(ctx context.Context, field graphql.CollectedField, obj *models.Link) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Link",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _LinkGroup_name(ctx context.Context, field graphql.CollectedField, obj *models.LinkGroup) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "LinkGroup",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _LinkGroup_links(ctx context.Context, field graphql.CollectedField, obj *models.LinkGroup) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "LinkGroup",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Links, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.Link)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNLink2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLink(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_command(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1343,6 +1549,43 @@ func (ec *executionContext) _Query_commands(ctx context.Context, field graphql.C
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNCommand2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐCommand(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_communityLinks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().CommunityLinks(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.LinkGroup)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNLinkGroup2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLinkGroup(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_keyword(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3861,6 +4104,70 @@ func (ec *executionContext) _Keyword(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var linkImplementors = []string{"Link"}
+
+func (ec *executionContext) _Link(ctx context.Context, sel ast.SelectionSet, obj *models.Link) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, linkImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Link")
+		case "name":
+			out.Values[i] = ec._Link_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "url":
+			out.Values[i] = ec._Link_url(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var linkGroupImplementors = []string{"LinkGroup"}
+
+func (ec *executionContext) _LinkGroup(ctx context.Context, sel ast.SelectionSet, obj *models.LinkGroup) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, linkGroupImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("LinkGroup")
+		case "name":
+			out.Values[i] = ec._LinkGroup_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "links":
+			out.Values[i] = ec._LinkGroup_links(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -3899,6 +4206,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_commands(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "communityLinks":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_communityLinks(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -4554,6 +4875,108 @@ func (ec *executionContext) marshalNKeyword2ᚖgithubᚗcomᚋStarWarsDevᚋarch
 		return graphql.Null
 	}
 	return ec._Keyword(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNLink2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLink(ctx context.Context, sel ast.SelectionSet, v models.Link) graphql.Marshaler {
+	return ec._Link(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNLink2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLink(ctx context.Context, sel ast.SelectionSet, v []*models.Link) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNLink2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLink(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNLink2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLink(ctx context.Context, sel ast.SelectionSet, v *models.Link) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Link(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNLinkGroup2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLinkGroup(ctx context.Context, sel ast.SelectionSet, v models.LinkGroup) graphql.Marshaler {
+	return ec._LinkGroup(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNLinkGroup2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLinkGroup(ctx context.Context, sel ast.SelectionSet, v []*models.LinkGroup) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNLinkGroup2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLinkGroup(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNLinkGroup2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐLinkGroup(ctx context.Context, sel ast.SelectionSet, v *models.LinkGroup) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._LinkGroup(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

@@ -27,6 +27,16 @@ type Keyword struct {
 	Description string `json:"description"`
 }
 
+type Link struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
+type LinkGroup struct {
+	Name  string  `json:"name"`
+	Links []*Link `json:"links"`
+}
+
 type Unit struct {
 	ID           string     `json:"id"`
 	Name         string     `json:"name"`
