@@ -36,7 +36,8 @@ func CommandCards() ([]*models.Command, error) {
 	var commands []*models.Command
 
 	for _, card := range data.CommandCards() {
-		command := transform.CardToCommand(&card)
+		extCard, _ := ExtCommandCard(card.CardName)
+		command := transform.CardToCommand(&card, extCard)
 		commands = append(commands, &command)
 	}
 
@@ -53,7 +54,8 @@ func UnitCards() ([]*models.Unit, error) {
 	var units []*models.Unit
 
 	for _, card := range data.UnitCards() {
-		unit := transform.CardToUnit(&card)
+		extUnit, _ := ExtUnit(card.CardName)
+		unit := transform.CardToUnit(&card, extUnit)
 		units = append(units, &unit)
 	}
 
@@ -70,7 +72,8 @@ func UpgradeCards() ([]*models.Upgrade, error) {
 	var upgrades []*models.Upgrade
 
 	for _, card := range data.UpgradeCards() {
-		upgrade := transform.CardToUpgrade(&card)
+		extUpgrade, _ := ExtUpgrade(card.CardName)
+		upgrade := transform.CardToUpgrade(&card, extUpgrade)
 		upgrades = append(upgrades, &upgrade)
 	}
 

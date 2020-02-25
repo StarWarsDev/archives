@@ -53,8 +53,16 @@ type ComplexityRoot struct {
 		Image        func(childComplexity int) int
 		Keywords     func(childComplexity int) int
 		Name         func(childComplexity int) int
+		Orders       func(childComplexity int) int
 		Pips         func(childComplexity int) int
 		Requirements func(childComplexity int) int
+		Weapon       func(childComplexity int) int
+	}
+
+	Dice struct {
+		Black func(childComplexity int) int
+		Red   func(childComplexity int) int
+		White func(childComplexity int) int
 	}
 
 	Keyword struct {
@@ -84,11 +92,24 @@ type ComplexityRoot struct {
 		Upgrades       func(childComplexity int, query *string) int
 	}
 
+	Range struct {
+		From func(childComplexity int) int
+		To   func(childComplexity int) int
+	}
+
+	Surge struct {
+		Attack  func(childComplexity int) int
+		Defense func(childComplexity int) int
+	}
+
 	Unit struct {
 		CardSubType  func(childComplexity int) int
 		CardType     func(childComplexity int) int
 		CommandCards func(childComplexity int) int
 		Cost         func(childComplexity int) int
+		Courage      func(childComplexity int) int
+		Defense      func(childComplexity int) int
+		Entourage    func(childComplexity int) int
 		Faction      func(childComplexity int) int
 		ID           func(childComplexity int) int
 		Icon         func(childComplexity int) int
@@ -97,21 +118,36 @@ type ComplexityRoot struct {
 		Name         func(childComplexity int) int
 		Rank         func(childComplexity int) int
 		Requirements func(childComplexity int) int
+		Resilience   func(childComplexity int) int
 		Slots        func(childComplexity int) int
+		Surge        func(childComplexity int) int
 		Unique       func(childComplexity int) int
+		Weapons      func(childComplexity int) int
+		Wounds       func(childComplexity int) int
 	}
 
 	Upgrade struct {
-		CardSubType  func(childComplexity int) int
-		CardType     func(childComplexity int) int
-		Cost         func(childComplexity int) int
-		ID           func(childComplexity int) int
-		Icon         func(childComplexity int) int
-		Image        func(childComplexity int) int
-		Keywords     func(childComplexity int) int
-		Name         func(childComplexity int) int
-		Requirements func(childComplexity int) int
-		Unique       func(childComplexity int) int
+		CardSubType        func(childComplexity int) int
+		CardType           func(childComplexity int) int
+		Cost               func(childComplexity int) int
+		Exhaust            func(childComplexity int) int
+		ID                 func(childComplexity int) int
+		Icon               func(childComplexity int) int
+		Image              func(childComplexity int) int
+		Keywords           func(childComplexity int) int
+		Name               func(childComplexity int) int
+		Requirements       func(childComplexity int) int
+		Unique             func(childComplexity int) int
+		UnitTypeExclusions func(childComplexity int) int
+		Weapon             func(childComplexity int) int
+	}
+
+	Weapon struct {
+		Dice     func(childComplexity int) int
+		Keywords func(childComplexity int) int
+		Name     func(childComplexity int) int
+		Range    func(childComplexity int) int
+		Surge    func(childComplexity int) int
 	}
 }
 
@@ -205,6 +241,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Command.Name(childComplexity), true
 
+	case "Command.orders":
+		if e.complexity.Command.Orders == nil {
+			break
+		}
+
+		return e.complexity.Command.Orders(childComplexity), true
+
 	case "Command.pips":
 		if e.complexity.Command.Pips == nil {
 			break
@@ -218,6 +261,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Command.Requirements(childComplexity), true
+
+	case "Command.weapon":
+		if e.complexity.Command.Weapon == nil {
+			break
+		}
+
+		return e.complexity.Command.Weapon(childComplexity), true
+
+	case "Dice.black":
+		if e.complexity.Dice.Black == nil {
+			break
+		}
+
+		return e.complexity.Dice.Black(childComplexity), true
+
+	case "Dice.red":
+		if e.complexity.Dice.Red == nil {
+			break
+		}
+
+		return e.complexity.Dice.Red(childComplexity), true
+
+	case "Dice.white":
+		if e.complexity.Dice.White == nil {
+			break
+		}
+
+		return e.complexity.Dice.White(childComplexity), true
 
 	case "Keyword.description":
 		if e.complexity.Keyword.Description == nil {
@@ -364,6 +435,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Upgrades(childComplexity, args["query"].(*string)), true
 
+	case "Range.from":
+		if e.complexity.Range.From == nil {
+			break
+		}
+
+		return e.complexity.Range.From(childComplexity), true
+
+	case "Range.to":
+		if e.complexity.Range.To == nil {
+			break
+		}
+
+		return e.complexity.Range.To(childComplexity), true
+
+	case "Surge.attack":
+		if e.complexity.Surge.Attack == nil {
+			break
+		}
+
+		return e.complexity.Surge.Attack(childComplexity), true
+
+	case "Surge.defense":
+		if e.complexity.Surge.Defense == nil {
+			break
+		}
+
+		return e.complexity.Surge.Defense(childComplexity), true
+
 	case "Unit.cardSubType":
 		if e.complexity.Unit.CardSubType == nil {
 			break
@@ -391,6 +490,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Unit.Cost(childComplexity), true
+
+	case "Unit.courage":
+		if e.complexity.Unit.Courage == nil {
+			break
+		}
+
+		return e.complexity.Unit.Courage(childComplexity), true
+
+	case "Unit.defense":
+		if e.complexity.Unit.Defense == nil {
+			break
+		}
+
+		return e.complexity.Unit.Defense(childComplexity), true
+
+	case "Unit.entourage":
+		if e.complexity.Unit.Entourage == nil {
+			break
+		}
+
+		return e.complexity.Unit.Entourage(childComplexity), true
 
 	case "Unit.faction":
 		if e.complexity.Unit.Faction == nil {
@@ -448,6 +568,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Unit.Requirements(childComplexity), true
 
+	case "Unit.resilience":
+		if e.complexity.Unit.Resilience == nil {
+			break
+		}
+
+		return e.complexity.Unit.Resilience(childComplexity), true
+
 	case "Unit.slots":
 		if e.complexity.Unit.Slots == nil {
 			break
@@ -455,12 +582,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Unit.Slots(childComplexity), true
 
+	case "Unit.surge":
+		if e.complexity.Unit.Surge == nil {
+			break
+		}
+
+		return e.complexity.Unit.Surge(childComplexity), true
+
 	case "Unit.unique":
 		if e.complexity.Unit.Unique == nil {
 			break
 		}
 
 		return e.complexity.Unit.Unique(childComplexity), true
+
+	case "Unit.weapons":
+		if e.complexity.Unit.Weapons == nil {
+			break
+		}
+
+		return e.complexity.Unit.Weapons(childComplexity), true
+
+	case "Unit.wounds":
+		if e.complexity.Unit.Wounds == nil {
+			break
+		}
+
+		return e.complexity.Unit.Wounds(childComplexity), true
 
 	case "Upgrade.cardSubType":
 		if e.complexity.Upgrade.CardSubType == nil {
@@ -482,6 +630,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Upgrade.Cost(childComplexity), true
+
+	case "Upgrade.exhaust":
+		if e.complexity.Upgrade.Exhaust == nil {
+			break
+		}
+
+		return e.complexity.Upgrade.Exhaust(childComplexity), true
 
 	case "Upgrade.id":
 		if e.complexity.Upgrade.ID == nil {
@@ -531,6 +686,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Upgrade.Unique(childComplexity), true
+
+	case "Upgrade.unitTypeExclusions":
+		if e.complexity.Upgrade.UnitTypeExclusions == nil {
+			break
+		}
+
+		return e.complexity.Upgrade.UnitTypeExclusions(childComplexity), true
+
+	case "Upgrade.weapon":
+		if e.complexity.Upgrade.Weapon == nil {
+			break
+		}
+
+		return e.complexity.Upgrade.Weapon(childComplexity), true
+
+	case "Weapon.dice":
+		if e.complexity.Weapon.Dice == nil {
+			break
+		}
+
+		return e.complexity.Weapon.Dice(childComplexity), true
+
+	case "Weapon.keywords":
+		if e.complexity.Weapon.Keywords == nil {
+			break
+		}
+
+		return e.complexity.Weapon.Keywords(childComplexity), true
+
+	case "Weapon.name":
+		if e.complexity.Weapon.Name == nil {
+			break
+		}
+
+		return e.complexity.Weapon.Name(childComplexity), true
+
+	case "Weapon.range":
+		if e.complexity.Weapon.Range == nil {
+			break
+		}
+
+		return e.complexity.Weapon.Range(childComplexity), true
+
+	case "Weapon.surge":
+		if e.complexity.Weapon.Surge == nil {
+			break
+		}
+
+		return e.complexity.Weapon.Surge(childComplexity), true
 
 	}
 	return 0, false
@@ -596,6 +800,30 @@ interface Card {
     image: String!
 }
 
+type Surge {
+    attack: String!
+    defense: String!
+}
+
+type Range {
+    from: Int!
+    to: Int!
+}
+
+type Dice {
+    black: Int!
+    red: Int!
+    white: Int!
+}
+
+type Weapon {
+    name: String!
+    range: Range!
+    keywords: [String!]!
+    dice: Dice!
+    surge: Surge
+}
+
 type Unit implements Card {
 	id: ID!
 	name: String!
@@ -611,6 +839,13 @@ type Unit implements Card {
     slots: [String!]!
     keywords: [String!]!
     commandCards: [Command!]!
+    wounds: Int!
+    courage: Int
+    resilience: Int
+    defense: String!
+    entourage: [String!]!
+    surge: Surge
+    weapons: [Weapon!]!
 }
 
 type Upgrade implements Card {
@@ -624,6 +859,9 @@ type Upgrade implements Card {
     unique: Boolean!
     cost: Int!
     keywords: [String!]!
+    exhaust: Boolean!
+    weapon: Weapon
+    unitTypeExclusions: [String!]!
 }
 
 type Command implements Card {
@@ -638,6 +876,8 @@ type Command implements Card {
     faction: String!
     keywords: [String!]!
     pips: Int!
+    orders: String!
+    weapon: Weapon
 }
 
 type Keyword {
@@ -1224,6 +1464,188 @@ func (ec *executionContext) _Command_pips(ctx context.Context, field graphql.Col
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Pips, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Command_orders(ctx context.Context, field graphql.CollectedField, obj *models.Command) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Command",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Orders, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Command_weapon(ctx context.Context, field graphql.CollectedField, obj *models.Command) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Command",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Weapon, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.Weapon)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Dice_black(ctx context.Context, field graphql.CollectedField, obj *models.Dice) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Dice",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Black, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Dice_red(ctx context.Context, field graphql.CollectedField, obj *models.Dice) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Dice",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Red, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Dice_white(ctx context.Context, field graphql.CollectedField, obj *models.Dice) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Dice",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.White, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1927,6 +2349,154 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Range_from(ctx context.Context, field graphql.CollectedField, obj *models.Range) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Range",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.From, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Range_to(ctx context.Context, field graphql.CollectedField, obj *models.Range) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Range",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.To, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Surge_attack(ctx context.Context, field graphql.CollectedField, obj *models.Surge) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Surge",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Attack, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Surge_defense(ctx context.Context, field graphql.CollectedField, obj *models.Surge) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Surge",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Defense, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Unit_id(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2445,6 +3015,256 @@ func (ec *executionContext) _Unit_commandCards(ctx context.Context, field graphq
 	return ec.marshalNCommand2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐCommand(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Unit_wounds(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Unit",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Wounds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Unit_courage(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Unit",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Courage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Unit_resilience(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Unit",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Resilience, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Unit_defense(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Unit",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Defense, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Unit_entourage(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Unit",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Entourage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Unit_surge(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Unit",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Surge, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.Surge)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOSurge2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐSurge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Unit_weapons(ctx context.Context, field graphql.CollectedField, obj *models.Unit) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Unit",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Weapons, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.Weapon)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNWeapon2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Upgrade_id(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2813,6 +3633,296 @@ func (ec *executionContext) _Upgrade_keywords(ctx context.Context, field graphql
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Upgrade_exhaust(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Upgrade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Exhaust, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Upgrade_weapon(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Upgrade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Weapon, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.Weapon)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Upgrade_unitTypeExclusions(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Upgrade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UnitTypeExclusions, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Weapon_name(ctx context.Context, field graphql.CollectedField, obj *models.Weapon) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Weapon",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Weapon_range(ctx context.Context, field graphql.CollectedField, obj *models.Weapon) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Weapon",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Range, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Range)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNRange2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐRange(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Weapon_keywords(ctx context.Context, field graphql.CollectedField, obj *models.Weapon) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Weapon",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Keywords, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Weapon_dice(ctx context.Context, field graphql.CollectedField, obj *models.Weapon) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Weapon",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Dice, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Dice)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNDice2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐDice(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Weapon_surge(ctx context.Context, field graphql.CollectedField, obj *models.Weapon) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Weapon",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Surge, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.Surge)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOSurge2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐSurge(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -4061,6 +5171,50 @@ func (ec *executionContext) _Command(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "orders":
+			out.Values[i] = ec._Command_orders(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "weapon":
+			out.Values[i] = ec._Command_weapon(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var diceImplementors = []string{"Dice"}
+
+func (ec *executionContext) _Dice(ctx context.Context, sel ast.SelectionSet, obj *models.Dice) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, diceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Dice")
+		case "black":
+			out.Values[i] = ec._Dice_black(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "red":
+			out.Values[i] = ec._Dice_red(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "white":
+			out.Values[i] = ec._Dice_white(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4324,6 +5478,70 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
+var rangeImplementors = []string{"Range"}
+
+func (ec *executionContext) _Range(ctx context.Context, sel ast.SelectionSet, obj *models.Range) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, rangeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Range")
+		case "from":
+			out.Values[i] = ec._Range_from(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "to":
+			out.Values[i] = ec._Range_to(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var surgeImplementors = []string{"Surge"}
+
+func (ec *executionContext) _Surge(ctx context.Context, sel ast.SelectionSet, obj *models.Surge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, surgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Surge")
+		case "attack":
+			out.Values[i] = ec._Surge_attack(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "defense":
+			out.Values[i] = ec._Surge_defense(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var unitImplementors = []string{"Unit", "Card"}
 
 func (ec *executionContext) _Unit(ctx context.Context, sel ast.SelectionSet, obj *models.Unit) graphql.Marshaler {
@@ -4405,6 +5623,32 @@ func (ec *executionContext) _Unit(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "wounds":
+			out.Values[i] = ec._Unit_wounds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "courage":
+			out.Values[i] = ec._Unit_courage(ctx, field, obj)
+		case "resilience":
+			out.Values[i] = ec._Unit_resilience(ctx, field, obj)
+		case "defense":
+			out.Values[i] = ec._Unit_defense(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "entourage":
+			out.Values[i] = ec._Unit_entourage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "surge":
+			out.Values[i] = ec._Unit_surge(ctx, field, obj)
+		case "weapons":
+			out.Values[i] = ec._Unit_weapons(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4477,6 +5721,62 @@ func (ec *executionContext) _Upgrade(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "exhaust":
+			out.Values[i] = ec._Upgrade_exhaust(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "weapon":
+			out.Values[i] = ec._Upgrade_weapon(ctx, field, obj)
+		case "unitTypeExclusions":
+			out.Values[i] = ec._Upgrade_unitTypeExclusions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var weaponImplementors = []string{"Weapon"}
+
+func (ec *executionContext) _Weapon(ctx context.Context, sel ast.SelectionSet, obj *models.Weapon) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, weaponImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Weapon")
+		case "name":
+			out.Values[i] = ec._Weapon_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "range":
+			out.Values[i] = ec._Weapon_range(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "keywords":
+			out.Values[i] = ec._Weapon_keywords(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "dice":
+			out.Values[i] = ec._Weapon_dice(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "surge":
+			out.Values[i] = ec._Weapon_surge(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4798,6 +6098,20 @@ func (ec *executionContext) marshalNCommand2ᚖgithubᚗcomᚋStarWarsDevᚋarch
 	return ec._Command(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNDice2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐDice(ctx context.Context, sel ast.SelectionSet, v models.Dice) graphql.Marshaler {
+	return ec._Dice(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNDice2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐDice(ctx context.Context, sel ast.SelectionSet, v *models.Dice) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Dice(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalID(v)
 }
@@ -4979,6 +6293,20 @@ func (ec *executionContext) marshalNLinkGroup2ᚖgithubᚗcomᚋStarWarsDevᚋar
 	return ec._LinkGroup(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNRange2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐRange(ctx context.Context, sel ast.SelectionSet, v models.Range) graphql.Marshaler {
+	return ec._Range(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNRange2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐRange(ctx context.Context, sel ast.SelectionSet, v *models.Range) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Range(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalString(v)
 }
@@ -5122,6 +6450,57 @@ func (ec *executionContext) marshalNUpgrade2ᚖgithubᚗcomᚋStarWarsDevᚋarch
 		return graphql.Null
 	}
 	return ec._Upgrade(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNWeapon2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v models.Weapon) graphql.Marshaler {
+	return ec._Weapon(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNWeapon2ᚕᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v []*models.Weapon) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v *models.Weapon) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Weapon(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -5373,6 +6752,29 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
 }
 
+func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	return graphql.MarshalInt(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOInt2int(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOInt2int(ctx, sel, *v)
+}
+
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalString(v)
 }
@@ -5394,6 +6796,28 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return ec.marshalOString2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOSurge2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐSurge(ctx context.Context, sel ast.SelectionSet, v models.Surge) graphql.Marshaler {
+	return ec._Surge(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOSurge2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐSurge(ctx context.Context, sel ast.SelectionSet, v *models.Surge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Surge(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOWeapon2githubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v models.Weapon) graphql.Marshaler {
+	return ec._Weapon(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx context.Context, sel ast.SelectionSet, v *models.Weapon) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Weapon(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValue(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

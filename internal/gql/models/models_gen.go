@@ -18,9 +18,17 @@ type Command struct {
 	Faction      string   `json:"faction"`
 	Keywords     []string `json:"keywords"`
 	Pips         int      `json:"pips"`
+	Orders       string   `json:"orders"`
+	Weapon       *Weapon  `json:"weapon"`
 }
 
 func (Command) IsCard() {}
+
+type Dice struct {
+	Black int `json:"black"`
+	Red   int `json:"red"`
+	White int `json:"white"`
+}
 
 type Keyword struct {
 	Name        string `json:"name"`
@@ -35,6 +43,16 @@ type Link struct {
 type LinkGroup struct {
 	Name  string  `json:"name"`
 	Links []*Link `json:"links"`
+}
+
+type Range struct {
+	From int `json:"from"`
+	To   int `json:"to"`
+}
+
+type Surge struct {
+	Attack  string `json:"attack"`
+	Defense string `json:"defense"`
 }
 
 type Unit struct {
@@ -52,21 +70,39 @@ type Unit struct {
 	Slots        []string   `json:"slots"`
 	Keywords     []string   `json:"keywords"`
 	CommandCards []*Command `json:"commandCards"`
+	Wounds       int        `json:"wounds"`
+	Courage      *int       `json:"courage"`
+	Resilience   *int       `json:"resilience"`
+	Defense      string     `json:"defense"`
+	Entourage    []string   `json:"entourage"`
+	Surge        *Surge     `json:"surge"`
+	Weapons      []*Weapon  `json:"weapons"`
 }
 
 func (Unit) IsCard() {}
 
 type Upgrade struct {
-	ID           string   `json:"id"`
-	CardType     string   `json:"cardType"`
-	CardSubType  string   `json:"cardSubType"`
-	Name         string   `json:"name"`
-	Requirements []string `json:"requirements"`
-	Icon         string   `json:"icon"`
-	Image        string   `json:"image"`
-	Unique       bool     `json:"unique"`
-	Cost         int      `json:"cost"`
-	Keywords     []string `json:"keywords"`
+	ID                 string   `json:"id"`
+	CardType           string   `json:"cardType"`
+	CardSubType        string   `json:"cardSubType"`
+	Name               string   `json:"name"`
+	Requirements       []string `json:"requirements"`
+	Icon               string   `json:"icon"`
+	Image              string   `json:"image"`
+	Unique             bool     `json:"unique"`
+	Cost               int      `json:"cost"`
+	Keywords           []string `json:"keywords"`
+	Exhaust            bool     `json:"exhaust"`
+	Weapon             *Weapon  `json:"weapon"`
+	UnitTypeExclusions []string `json:"unitTypeExclusions"`
 }
 
 func (Upgrade) IsCard() {}
+
+type Weapon struct {
+	Name     string   `json:"name"`
+	Range    *Range   `json:"range"`
+	Keywords []string `json:"keywords"`
+	Dice     *Dice    `json:"dice"`
+	Surge    *Surge   `json:"surge"`
+}

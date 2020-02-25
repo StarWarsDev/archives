@@ -13,6 +13,30 @@ interface Card {
     image: String!
 }
 
+type Surge {
+    attack: String!
+    defense: String!
+}
+
+type Range {
+    from: Int!
+    to: Int!
+}
+
+type Dice {
+    black: Int!
+    red: Int!
+    white: Int!
+}
+
+type Weapon {
+    name: String!
+    range: Range!
+    keywords: [String!]!
+    dice: Dice!
+    surge: Surge
+}
+
 type Unit implements Card {
 	id: ID!
 	name: String!
@@ -28,6 +52,13 @@ type Unit implements Card {
     slots: [String!]!
     keywords: [String!]!
     commandCards: [Command!]!
+    wounds: Int!
+    courage: Int
+    resilience: Int
+    defense: String!
+    entourage: [String!]!
+    surge: Surge
+    weapons: [Weapon!]!
 }
 
 type Upgrade implements Card {
@@ -41,6 +72,9 @@ type Upgrade implements Card {
     unique: Boolean!
     cost: Int!
     keywords: [String!]!
+    exhaust: Boolean!
+    weapon: Weapon
+    unitTypeExclusions: [String!]!
 }
 
 type Command implements Card {
@@ -55,6 +89,8 @@ type Command implements Card {
     faction: String!
     keywords: [String!]!
     pips: Int!
+    orders: String!
+    weapon: Weapon
 }
 
 type Keyword {

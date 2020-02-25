@@ -1,5 +1,7 @@
 github.com/99designs/gqlgen v0.10.1 h1:1BgB6XKGTHq7uH4G1/PYyKe2Kz7/vw3AlvMZlD3TEEY=
 github.com/99designs/gqlgen v0.10.1/go.mod h1:IviubpnyI4gbBcj8IcxSSc/Q/+af5riwCmJmwF0uaPE=
+github.com/StarWarsDev/go-legion-data v1.0.0 h1:vliwD41wCthrBGhO/IUsYZjBVbpYFjQSVefJa8hVNHs=
+github.com/StarWarsDev/go-legion-data v1.0.0/go.mod h1:aSi4Vdpgq7DkO75Cl3cdrC54IJZQtqssVtlue0qF4IU=
 github.com/StarWarsDev/go-legion-hq v1.0.1 h1:GFfR53VAVoZOTFIiIDKH9maEQiy0QQkE3pe+wcEBhcY=
 github.com/StarWarsDev/go-legion-hq v1.0.1/go.mod h1:UelgkvmUB6TvXtARFztJNmZl8zMZiRNgVYTX6iM6gqk=
 github.com/agnivade/levenshtein v1.0.1 h1:3oJU7J3FGFmyhn8KHjmVaZCN5hxTr7GxgRue+sxIXdQ=
