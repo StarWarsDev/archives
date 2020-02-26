@@ -3,6 +3,7 @@ package data
 import (
 	"fmt"
 	"github.com/StarWarsDev/go-legion-data"
+	"strings"
 	"time"
 )
 
@@ -32,7 +33,8 @@ func ExtUnit(name, rank string) (*legiondata.Unit, error) {
 	}
 
 	for _, unit := range data.Units {
-		if unit.Name == name && unit.Rank == rank {
+		if strings.ToLower(unit.Name) == strings.ToLower(name) &&
+			strings.ToLower(unit.Rank) == strings.ToLower(rank) {
 			return &unit, nil
 		}
 	}
