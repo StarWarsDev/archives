@@ -25,14 +25,14 @@ func getExtData() (legiondata.Data, error) {
 	return extData, nil
 }
 
-func ExtUnit(name string) (*legiondata.Unit, error) {
+func ExtUnit(name, rank string) (*legiondata.Unit, error) {
 	data, err := getExtData()
 	if err != nil {
 		return nil, err
 	}
 
 	for _, unit := range data.Units {
-		if unit.Name == name {
+		if unit.Name == name && unit.Rank == rank {
 			return &unit, nil
 		}
 	}

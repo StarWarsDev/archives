@@ -54,7 +54,7 @@ func UnitCards() ([]*models.Unit, error) {
 	var units []*models.Unit
 
 	for _, card := range data.UnitCards() {
-		extUnit, _ := ExtUnit(card.CardName)
+		extUnit, _ := ExtUnit(card.CardName, card.Rank)
 		unit := transform.CardToUnit(&card, extUnit)
 		units = append(units, &unit)
 	}
