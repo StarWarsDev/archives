@@ -91,6 +91,7 @@ type Command implements Card {
     pips: Int!
     orders: String!
     weapon: Weapon
+    text: String!
 }
 
 type Keyword {

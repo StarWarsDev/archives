@@ -56,6 +56,7 @@ type ComplexityRoot struct {
 		Orders       func(childComplexity int) int
 		Pips         func(childComplexity int) int
 		Requirements func(childComplexity int) int
+		Text         func(childComplexity int) int
 		Weapon       func(childComplexity int) int
 	}
 
@@ -261,6 +262,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Command.Requirements(childComplexity), true
+
+	case "Command.text":
+		if e.complexity.Command.Text == nil {
+			break
+		}
+
+		return e.complexity.Command.Text(childComplexity), true
 
 	case "Command.weapon":
 		if e.complexity.Command.Weapon == nil {
@@ -878,6 +886,7 @@ type Command implements Card {
     pips: Int!
     orders: String!
     weapon: Weapon
+    text: String!
 }
 
 type Keyword {
@@ -1550,6 +1559,43 @@ func (ec *executionContext) _Command_weapon(ctx context.Context, field graphql.C
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOWeapon2ᚖgithubᚗcomᚋStarWarsDevᚋarchivesᚋinternalᚋgqlᚋmodelsᚐWeapon(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Command_text(ctx context.Context, field graphql.CollectedField, obj *models.Command) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Command",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Dice_black(ctx context.Context, field graphql.CollectedField, obj *models.Dice) (ret graphql.Marshaler) {
@@ -5178,6 +5224,11 @@ func (ec *executionContext) _Command(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "weapon":
 			out.Values[i] = ec._Command_weapon(ctx, field, obj)
+		case "text":
+			out.Values[i] = ec._Command_text(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

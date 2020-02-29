@@ -33,6 +33,7 @@ func CardToCommand(card *legionhq.Card, extCard *legiondata.CommandCard) models.
 
 	if extCard != nil {
 		commandCard.Orders = extCard.Orders
+		commandCard.Text = extCard.Description
 		if extCard.Weapon != nil {
 			commandCard.Weapon = &models.Weapon{
 				Name: extCard.Weapon.Name,

@@ -20,6 +20,7 @@ type Command struct {
 	Pips         int      `json:"pips"`
 	Orders       string   `json:"orders"`
 	Weapon       *Weapon  `json:"weapon"`
+	Text         string   `json:"text"`
 }
 
 func (Command) IsCard() {}
