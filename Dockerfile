@@ -11,13 +11,13 @@ WORKDIR /src
 COPY . .
 RUN go build -o bin/archives main.go
 
-FROM alpine
+FROM node:alpine
 WORKDIR /archives
 COPY --from=build /src/bin/archives .
 
 RUN apk update \
   && apk upgrade \
-  && apk add --no-cache ca-certificates \
+  && apk add --no-cache ca-certificates git \
   && update-ca-certificates 2>/dev/null || true
 EXPOSE 3001
 
