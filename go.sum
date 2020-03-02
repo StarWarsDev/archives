@@ -4,6 +4,8 @@ github.com/StarWarsDev/go-legion-data v1.0.0 h1:vliwD41wCthrBGhO/IUsYZjBVbpYFjQS
 github.com/StarWarsDev/go-legion-data v1.0.0/go.mod h1:aSi4Vdpgq7DkO75Cl3cdrC54IJZQtqssVtlue0qF4IU=
 github.com/StarWarsDev/go-legion-data v1.1.0 h1:0miN3m7G02OIyMxatS0cWtDhC9CzeJffEtCJgp9QkyA=
 github.com/StarWarsDev/go-legion-data v1.1.0/go.mod h1:EIbYNZyEm9BfI2kJOSYfMdMpTR1S0sPgNKmXjwMIF3A=
+github.com/StarWarsDev/go-legion-data v1.1.1 h1:vnADUyj8oq1E0JGPUCzTddx6P3DwU7bBM1R/r6aIPYE=
+github.com/StarWarsDev/go-legion-data v1.1.1/go.mod h1:aSi4Vdpgq7DkO75Cl3cdrC54IJZQtqssVtlue0qF4IU=
 github.com/StarWarsDev/go-legion-hq v1.0.1 h1:GFfR53VAVoZOTFIiIDKH9maEQiy0QQkE3pe+wcEBhcY=
 github.com/StarWarsDev/go-legion-hq v1.0.1/go.mod h1:UelgkvmUB6TvXtARFztJNmZl8zMZiRNgVYTX6iM6gqk=
 github.com/agnivade/levenshtein v1.0.1 h1:3oJU7J3FGFmyhn8KHjmVaZCN5hxTr7GxgRue+sxIXdQ=
