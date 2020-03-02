@@ -135,6 +135,7 @@ func CardToUpgrade(card *legionhq.Card, extUpgrade *legiondata.Upgrade) models.U
 	if extUpgrade != nil {
 		upgrade.Exhaust = extUpgrade.Exhaust != nil && *extUpgrade.Exhaust
 		upgrade.UnitTypeExclusions = extUpgrade.UnitTypeExclusions
+		upgrade.Text = extUpgrade.Description
 		if extUpgrade.Weapon != nil {
 			upgrade.Weapon = &models.Weapon{
 				Name: extUpgrade.Weapon.Name,

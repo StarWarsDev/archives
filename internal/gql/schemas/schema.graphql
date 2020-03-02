@@ -75,6 +75,7 @@ type Upgrade implements Card {
     exhaust: Boolean!
     weapon: Weapon
     unitTypeExclusions: [String!]!
+    text: String!
 }
 
 type Command implements Card {

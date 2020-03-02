@@ -138,6 +138,7 @@ type ComplexityRoot struct {
 		Keywords           func(childComplexity int) int
 		Name               func(childComplexity int) int
 		Requirements       func(childComplexity int) int
+		Text               func(childComplexity int) int
 		Unique             func(childComplexity int) int
 		UnitTypeExclusions func(childComplexity int) int
 		Weapon             func(childComplexity int) int
@@ -688,6 +689,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Upgrade.Requirements(childComplexity), true
 
+	case "Upgrade.text":
+		if e.complexity.Upgrade.Text == nil {
+			break
+		}
+
+		return e.complexity.Upgrade.Text(childComplexity), true
+
 	case "Upgrade.unique":
 		if e.complexity.Upgrade.Unique == nil {
 			break
@@ -870,6 +878,7 @@ type Upgrade implements Card {
     exhaust: Boolean!
     weapon: Weapon
     unitTypeExclusions: [String!]!
+    text: String!
 }
 
 type Command implements Card {
@@ -3789,6 +3798,43 @@ func (ec *executionContext) _Upgrade_unitTypeExclusions(ctx context.Context, fie
 	return ec.marshalNString2ᚕstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Upgrade_text(ctx context.Context, field graphql.CollectedField, obj *models.Upgrade) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Upgrade",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Text, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Weapon_name(ctx context.Context, field graphql.CollectedField, obj *models.Weapon) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -5781,6 +5827,11 @@ func (ec *executionContext) _Upgrade(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._Upgrade_weapon(ctx, field, obj)
 		case "unitTypeExclusions":
 			out.Values[i] = ec._Upgrade_unitTypeExclusions(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "text":
+			out.Values[i] = ec._Upgrade_text(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

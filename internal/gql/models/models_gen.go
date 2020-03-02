@@ -96,6 +96,7 @@ type Upgrade struct {
 	Exhaust            bool     `json:"exhaust"`
 	Weapon             *Weapon  `json:"weapon"`
 	UnitTypeExclusions []string `json:"unitTypeExclusions"`
+	Text               string   `json:"text"`
 }
 
 func (Upgrade) IsCard() {}
