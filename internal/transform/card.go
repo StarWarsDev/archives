@@ -18,17 +18,29 @@ func CardToCommand(card *legionhq.Card, extCard *legiondata.CommandCard) models.
 	}
 
 	commandCard := models.Command{
-		ID:           card.ID,
-		CardType:     card.CardType,
-		CardSubType:  card.CardSubType,
-		Name:         card.CardName,
-		Requirements: card.Requirements,
-		Icon:         ImagePathToURL(card.IconLocation),
-		Image:        ImagePathToURL(card.ImageLocation),
-		Commander:    card.Commander,
-		Faction:      card.Faction,
-		Keywords:     card.Keywords,
-		Pips:         pips,
+		ID:          card.ID,
+		CardType:    card.CardType,
+		CardSubType: card.CardSubType,
+		Name:        card.CardName,
+		Icon:        ImagePathToURL(card.IconLocation),
+		Image:       ImagePathToURL(card.ImageLocation),
+		Commander:   card.Commander,
+		Faction:     card.Faction,
+		Pips:        pips,
+	}
+
+	// loop through the requirements so we can filter out blanks
+	for _, requirement := range card.Requirements {
+		if requirement != "" {
+			commandCard.Requirements = append(commandCard.Requirements, requirement)
+		}
+	}
+
+	// loop through the keywords so we can filter out blanks
+	for _, keyword := range card.Keywords {
+		if keyword != "" {
+			commandCard.Keywords = append(commandCard.Keywords, keyword)
+		}
 	}
 
 	if extCard != nil {
@@ -64,19 +76,37 @@ func CardToCommand(card *legionhq.Card, extCard *legiondata.CommandCard) models.
 // CardToUnit converts a legionhq card into a Unit
 func CardToUnit(card *legionhq.Card, extUnit *legiondata.Unit) models.Unit {
 	unit := models.Unit{
-		ID:           card.ID,
-		Name:         card.CardName,
-		CardType:     card.CardType,
-		CardSubType:  card.CardSubType,
-		Icon:         ImagePathToURL(card.IconLocation),
-		Image:        ImagePathToURL(card.ImageLocation),
-		Requirements: card.Requirements,
-		Unique:       card.IsUnique,
-		Cost:         card.Cost,
-		Rank:         card.Rank,
-		Faction:      card.Faction,
-		Slots:        card.UpgradeBar,
-		Keywords:     card.Keywords,
+		ID:          card.ID,
+		Name:        card.CardName,
+		CardType:    card.CardType,
+		CardSubType: card.CardSubType,
+		Icon:        ImagePathToURL(card.IconLocation),
+		Image:       ImagePathToURL(card.ImageLocation),
+		Unique:      card.IsUnique,
+		Cost:        card.Cost,
+		Rank:        card.Rank,
+		Faction:     card.Faction,
+	}
+
+	// loop through the slots to filter out blanks
+	for _, slot := range card.UpgradeBar {
+		if slot != "" {
+			unit.Slots = append(unit.Slots, slot)
+		}
+	}
+
+	// loop through the requirements so we can filter out blanks
+	for _, requirement := range card.Requirements {
+		if requirement != "" {
+			unit.Requirements = append(unit.Requirements, requirement)
+		}
+	}
+
+	// loop through the keywords so we can filter out blanks
+	for _, keyword := range card.Keywords {
+		if keyword != "" {
+			unit.Keywords = append(unit.Keywords, keyword)
+		}
 	}
 
 	if extUnit != nil {
@@ -120,16 +150,28 @@ func CardToUnit(card *legionhq.Card, extUnit *legiondata.Unit) models.Unit {
 
 func CardToUpgrade(card *legionhq.Card, extUpgrade *legiondata.Upgrade) models.Upgrade {
 	upgrade := models.Upgrade{
-		ID:           card.ID,
-		CardType:     card.CardType,
-		CardSubType:  card.CardSubType,
-		Name:         card.CardName,
-		Requirements: card.Requirements,
-		Icon:         ImagePathToURL(card.IconLocation),
-		Image:        ImagePathToURL(card.ImageLocation),
-		Unique:       card.IsUnique,
-		Cost:         card.Cost,
-		Keywords:     card.Keywords,
+		ID:          card.ID,
+		CardType:    card.CardType,
+		CardSubType: card.CardSubType,
+		Name:        card.CardName,
+		Icon:        ImagePathToURL(card.IconLocation),
+		Image:       ImagePathToURL(card.ImageLocation),
+		Unique:      card.IsUnique,
+		Cost:        card.Cost,
+	}
+
+	// loop through the requirements so we can filter out blanks
+	for _, requirement := range card.Requirements {
+		if requirement != "" {
+			upgrade.Requirements = append(upgrade.Requirements, requirement)
+		}
+	}
+
+	// loop through the keywords so we can filter out blanks
+	for _, keyword := range card.Keywords {
+		if keyword != "" {
+			upgrade.Keywords = append(upgrade.Keywords, keyword)
+		}
 	}
 
 	if extUpgrade != nil {
