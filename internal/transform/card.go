@@ -1,14 +1,15 @@
 package transform
 
 import (
+	"fmt"
 	"github.com/StarWarsDev/archives/internal/gql/models"
 	legiondata "github.com/StarWarsDev/go-legion-data"
 	legionhq "github.com/StarWarsDev/go-legion-hq"
 	"strconv"
 )
 
-func ImagePathToURL(path string) string {
-	return "https://raw.githubusercontent.com/NicholasCBrown/legion-HQ-2.0/master/public" + path
+func ImagePathToURL(cardType, imageName string) string {
+	return fmt.Sprintf("https://d2b46bduclcqna.cloudfront.net/%sCards/%s", cardType, imageName)
 }
 
 func CardToCommand(card *legionhq.Card, extCard *legiondata.CommandCard) models.Command {
@@ -22,8 +23,7 @@ func CardToCommand(card *legionhq.Card, extCard *legiondata.CommandCard) models.
 		CardType:    card.CardType,
 		CardSubType: card.CardSubType,
 		Name:        card.CardName,
-		Icon:        ImagePathToURL(card.IconLocation),
-		Image:       ImagePathToURL(card.ImageLocation),
+		Image:       ImagePathToURL(card.CardType, card.ImageLocation),
 		Commander:   card.Commander,
 		Faction:     card.Faction,
 		Pips:        pips,
@@ -80,8 +80,7 @@ func CardToUnit(card *legionhq.Card, extUnit *legiondata.Unit) models.Unit {
 		Name:        card.CardName,
 		CardType:    card.CardType,
 		CardSubType: card.CardSubType,
-		Icon:        ImagePathToURL(card.IconLocation),
-		Image:       ImagePathToURL(card.ImageLocation),
+		Image:       ImagePathToURL(card.CardType, card.ImageLocation),
 		Unique:      card.IsUnique,
 		Cost:        card.Cost,
 		Rank:        card.Rank,
@@ -154,8 +153,7 @@ func CardToUpgrade(card *legionhq.Card, extUpgrade *legiondata.Upgrade) models.U
 		CardType:    card.CardType,
 		CardSubType: card.CardSubType,
 		Name:        card.CardName,
-		Icon:        ImagePathToURL(card.IconLocation),
-		Image:       ImagePathToURL(card.ImageLocation),
+		Image:       ImagePathToURL(card.CardType, card.ImageLocation),
 		Unique:      card.IsUnique,
 		Cost:        card.Cost,
 	}
